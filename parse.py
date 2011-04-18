@@ -46,22 +46,24 @@ def parse(path):
     
     doc = BeautifulSoup(f)
     #doc = html5lib.parse(f,treebuilder="beautifulsoup", encoding="utf-8")
+    parsed = {"empty":False}
     try:
         parsed = output(doc,os.path.getsize(path))
         return parsed
         #print repr(parsed).decode("unicode-escape")
-    except BlankDeclarationError:
-        print "Blank declaration: %s" %path
+    except BlankDeclarationError, e:
+        #print "Blank declaration: %s" %path
+        return {u"decl_id": e.value,u"scrape_date": str(datetime.date.today()),u"empty": True}
         #pass
     except MalformedDeclarationError, e:
         #pass
-        print "Malformed Declaration %s %s" %(repr(e.value),path)
-    except Exception, e:
+        raise MalformedDeclarationError(repr(e.value)+path)
+    #except Exception, e:
         #pass
-        print "Very Malformed Declaration %s %s" %(repr(e),path)
-    else:
+        #print "Very Malformed Declaration %s %s" %(repr(e),path)
+    #else:
         #pass
-        print "Success. %s" %path
+        #print "Success. %s" %path
 
 #def print_list(item):
 #    for e in item:
@@ -294,6 +296,7 @@ def page1_headers(pg_div,decl,size):
     # Only raise if the field is blank AND the size is small.
     # 24260 seems to be about what a truly blank declaration takes up
     if (decl_date == None or name == None) and size < 24300:
+        decl[u"decl_id"] = decl_id
         raise BlankDeclarationError(unicode(decl_id))
         # Otherwise, continue with the parse.
 
