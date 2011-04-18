@@ -58,8 +58,9 @@ def parse(path):
     except MalformedDeclarationError, e:
         #pass
         raise MalformedDeclarationError(repr(e.value)+path)
-    #except Exception, e:
+    except Exception, e:
         #pass
+        raise Exception(repr(e)+path)
         #print "Very Malformed Declaration %s %s" %(repr(e),path)
     #else:
         #pass
