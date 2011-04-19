@@ -46,11 +46,11 @@ def parse(path):
     
     doc = BeautifulSoup(f)
     #doc = html5lib.parse(f,treebuilder="beautifulsoup", encoding="utf-8")
-    parsed = {"empty":False}
+    parsed = {"empty":True}
     try:
         parsed = output(doc,os.path.getsize(path))
-        return parsed
         #print repr(parsed).decode("unicode-escape")
+        return parsed
     except BlankDeclarationError, e:
         #print "Blank declaration: %s" %path
         return {u"decl_id": e.value,u"scrape_date": str(datetime.date.today()),u"empty": True}
@@ -135,6 +135,12 @@ def position_from_style(style_str):
     #print pos
     return pos
 
+def init_field(key,coll,val):
+    try:
+        a = coll[key]
+    except KeyError:
+        coll[key] = val
+
 def clean_headers(headers,drop):
     """ Takes an array of BeautifulSoup <span> tags and returns
     an array of <span> tags excluding those found in drop"""
@@ -143,6 +149,10 @@ def clean_headers(headers,drop):
         if h.contents[0] not in drop:
             clean.append(h)
     return clean
+
+def de_htmlize(html_str):
+    """Removes html escaping."""
+    return html_str.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>').replace('&quot;', '"')
 
 def guess_ctr(txt,left):
     """Guesses the center of a string based on its left position
@@ -171,6 +181,7 @@ def create_columns(data,sep):
                 out[-1][-1][u"pos"][u"ctr"] = out[-1][0][u"pos"][u"ctr"]
             else:
                 out.append([d])
+    #print repr(out).decode("unicode-escape")
     return out
 
 def merge_rows(data,sep):
@@ -229,7 +240,7 @@ def parse_table(pg_div,drop,column_titles):
     txt_pos = []
     # Stitch together positions with header data
     for i in range(len(headers)): # i indexes two arrays
-        txt = headers[i].contents[0]
+        txt = de_htmlize(headers[i].contents[0])
         pos = positions[i]
         pos[u"ctr"] = guess_ctr(txt,pos[u"left"])
         txt_pos.append({u"txt": txt, u"pos": pos})
@@ -346,48 +357,59 @@ def t1_family(pg_div,decl,size):
 ########################
 # FAMILY (FT4)         #
 ########################
+    init_field(u"family",decl,[])
     column_titles = [u"name",u"surname",u"pob",u"dob",u"relation"]
-    decl[u"family"] = parse_table(pg_div,discard[u"page1"],column_titles)
+    decl[u"family"].extend(parse_table(pg_div,discard[u"page1"],column_titles))
 
 def t2_estate(pg_div,decl,size):
+    init_field(u"real_estate",decl,[])
     column_titles = [u"name_shares",u"prop_type",u"loc_area",u"co_owners"]
-    decl[u"real_estate"] = parse_table(pg_div,discard[u"page2"],column_titles)
+    decl[u"real_estate"].extend(parse_table(pg_div,discard[u"page2"],column_titles))
 
 def t3_chattel(pg_div,decl,size):
+    init_field(u"chattel",decl,[])
     column_titles = [u"name_shares",u"prop_type",u"description",u"co_owners"]
-    decl[u"chattel"] = parse_table(pg_div,discard[u"page3"],column_titles)
+    decl[u"chattel"].extend(parse_table(pg_div,discard[u"page3"],column_titles))
 
 def t4_securities(pg_div,decl,size):
+    init_field(u"securities",decl,[])
     column_titles = [u"name",u"issuer",u"type",u"price",u"quantity"]
-    decl[u"securities"] = parse_table(pg_div,discard[u"page4"],column_titles)
+    decl[u"securities"].extend(parse_table(pg_div,discard[u"page4"],column_titles))
 
 def t5_deposits(pg_div,decl,size):
+    init_field(u"deposits",decl,[])
     column_titles = [u"name",u"bank",u"type",u"balance"]
-    decl[u"deposits"] = parse_table(pg_div,discard[u"page5"],column_titles)
+    decl[u"deposits"].extend(parse_table(pg_div,discard[u"page5"],column_titles))
 
 def t6_cash(pg_div,decl,size):
+    init_field(u"cash",decl,[])
     column_titles = [u"name",u"amt_currency"]
-    decl[u"cash"] = parse_table(pg_div,discard[u"page6"],column_titles)
+    decl[u"cash"].extend(parse_table(pg_div,discard[u"page6"],column_titles))
 
 def t7_entrepreneur(pg_div,decl,size):
+    init_field(u"entrepreneurial",decl,[])
     column_titles = [u"name",u"corp_name_addr",u"particn_type",u"register_agency",u"particn_date",u"income_rec"]
-    decl[u"entrepreneurial"] = parse_table(pg_div,discard[u"page7"],column_titles)
+    decl[u"entrepreneurial"].extend(parse_table(pg_div,discard[u"page7"],column_titles))
 
 def t8_wages(pg_div,decl,size):
+    init_field(u"wages",decl,[])
     column_titles = [u"name",u"desc_workplace",u"desc_job",u"income_rec"]
-    decl[u"wages"] = parse_table(pg_div,discard[u"page8"],column_titles)
+    decl[u"wages"].extend(parse_table(pg_div,discard[u"page8"],column_titles))
 
 def t9_contracts(pg_div,decl,size):
+    init_field(u"contracts",decl,[])
     column_titles = [u"name",u"desc_value",u"date_period_agency",u"financial_result"]
-    decl[u"contracts"] = parse_table(pg_div,discard[u"page9"],column_titles)
+    decl[u"contracts"].extend(parse_table(pg_div,discard[u"page9"],column_titles))
 
 def t10_gifts(pg_div,decl,size):
+    init_field(u"gifts",decl,[])
     column_titles = [u"name",u"desc_value",u"giver_rel"]
-    decl[u"gifts"] = parse_table(pg_div,discard[u"page10"],column_titles)
+    decl[u"gifts"].extend(parse_table(pg_div,discard[u"page10"],column_titles))
 
 def t11_misc(pg_div,decl,size):
+    init_field(u"other_inc_exp",decl,[])
     column_titles = [u"recip_issuer",u"type",u"amount"]
-    decl[u"other_inc_exp"] = parse_table(pg_div,discard[u"page11"],column_titles)
+    decl[u"other_inc_exp"].extend(parse_table(pg_div,discard[u"page11"],column_titles))
 
 if __name__ == "__main__":
     main()

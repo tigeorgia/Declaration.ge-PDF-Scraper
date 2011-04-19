@@ -14,6 +14,7 @@ def detect_table(num,ft2s):
             #print (ft2.contents[0])
             #print (header_strings[num])
             if ft2.contents[0] in header_strings[num]:
+                #print "Detected table %d (guessed right)"%num
                 return num
 
     for ft2 in ft2s:
@@ -23,6 +24,7 @@ def detect_table(num,ft2s):
             #print ft2.contents[0]
             #print header_strings[i]
             if ft2.contents[0] in header_strings[i]:
+                #print "Detected table %d (guessed wrong)"%i
                 return i
     return 0
 
