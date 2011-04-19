@@ -20,18 +20,28 @@ def main():
     home = os.getcwd()
     couch = couchdb.client.Server("http://127.0.0.1:5984")
     db = couch["declarations"]
-    i = 0
+    tot_ct = 0
+    prs_ct = 0
+    add_ct = 0
     for arg in args:
         files = os.listdir(arg)
         os.chdir(arg)
+        rows = db.view('basic/by_decl_id')
         for f in files:
+            tot_ct += 1
             try:
                 uuid = couch.uuids()[0]
                 doc = parse.parse(f)
-                db[uuid] = doc
+                prs_ct += 1
+# Don't copy declarations we've already scraped.
+                if len(rows[doc["decl_id"]]) == 0:
+                    db[uuid] = doc
+                    add_ct += 1
             except MalformedDeclarationError:
-                pass
+                print "Malformed Declaration: %s"%repr(f)
         os.chdir(home)
+
+    print("Considered %d files. Parsed %d, added %d new files to db." %(tot_ct,prs_ct,add_ct))
 
 if __name__ == "__main__":
     main()
