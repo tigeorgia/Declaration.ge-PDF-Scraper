@@ -10,4 +10,4 @@ object. What you do with that object is up to you. db.py will take a directory
 of HTML files, parse them, and load them into a CouchDB database, if you have
 CouchDB installed.
 
-[BeautifulSoup](<http://www.crummy.com/software/BeautifulSoup/ "Beautiful Soup" is required.
+[BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/ "Beautiful Soup" is required.
