@@ -35,8 +35,11 @@ def main():
                 prs_ct += 1
 # Don't copy declarations we've already scraped.
                 if len(rows[doc["decl_id"]]) == 0:
+                    print "Adding declaration %s"%doc["decl_id"]
                     db[uuid] = doc
                     add_ct += 1
+                else:
+                    print "Duplicate declaration %s"%doc["decl_id"]
             except MalformedDeclarationError:
                 print "Malformed Declaration: %s"%repr(f)
         os.chdir(home)
