@@ -40,11 +40,15 @@ def main():
 
 
 def parse(path):
+    suffix = path.split('.')[-1]
+    if suffix not in ['html', 'htm']:
+        return None
+
     try:
         f = open(path)
     except IOError as e:
         print("Could not find file."+e)
-        return
+        return None
     
     doc = BeautifulSoup(f)
     #doc = html5lib.parse(f,treebuilder="beautifulsoup", encoding="utf-8")
