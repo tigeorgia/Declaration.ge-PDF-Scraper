@@ -3,12 +3,12 @@
 """Income declarations parser.
 
 Parses an income declaration from http://declaration.ge, converted
-to HTML using pdf2xml.
+to HTML using pdf2html
 """
 import sys
 import getopt
-import html5lib
-from html5lib import treebuilders
+#import html5lib
+#from html5lib import treebuilders
 from BeautifulSoup import BeautifulSoup #Deprecated but still the best
 import datetime
 import json
@@ -35,7 +35,9 @@ def main():
             sys.exit(0)
 # process arguments
     for arg in args:
+        print "Trying to parse %s" % arg
         parse(arg)
+
 
 def parse(path):
     try:
@@ -66,12 +68,15 @@ def parse(path):
         #pass
         #print "Success. %s" %path
 
+
 #def print_list(item):
 #    for e in item:
 #        if isinstance(e,collections.Iterable) and not isinstance(e,str):
 #            print_list(e)
 #        else:
 #            print(e)
+
+
 def output(doc,size):
     decl_obj = {} # Storage variable for the data.
     decl_obj[u"scrape_date"] = str(datetime.date.today())
@@ -88,7 +93,7 @@ def output(doc,size):
             page1_headers(page,decl_obj,size)
 
         # Once headers are parsed, handle tables.
-        ft2s = page.findAll(name=u'span',attrs={u"class": u"ft2"})
+        ft2s = page.findAll(name=u'span',attrs={u"class": u"ft02"})
         tnum = detect_table(pnum,ft2s)
         if tnum == 0:
             if pnum != 1:# Page 1 is only one allowed no table
@@ -101,15 +106,17 @@ def output(doc,size):
     return decl_obj
     #print "Successful"
 
+
 def is_mkhedruli(char):
     chars = [u'ღ',u'ჯ',u'უ',u'კ',u'ე',u'ნ',u'გ',u'შ',u'წ',u'ზ',u'ხ',u'ც',u'ჟ',u'დ',u'ლ',u'ო',u'რ',u'პ',u'ა',u'თ',u'ვ',u'ძ',u'ფ',u'ჭ',u'ჩ',u'ყ',u'ს',u'მ',u'ი',u'ტ',u'ქ',u'ბ',u'ჰ']
     return char in chars
+
 
 # Search through headings for one that successfully
 # converts to an int, return that.
 def discover_num(page):
     # Big text
-    headings = page.findAll(name=u'span', attrs={u"class": u"ft1"})
+    headings = page.findAll(name=u'span', attrs={u"class": u"ft01"})
     for head in headings:
         txt = head.contents[0]
         try:
@@ -135,11 +142,13 @@ def position_from_style(style_str):
     #print pos
     return pos
 
+
 def init_field(key,coll,val):
     try:
         a = coll[key]
     except KeyError:
         coll[key] = val
+
 
 def clean_headers(headers,drop):
     """ Takes an array of BeautifulSoup <span> tags and returns
@@ -150,15 +159,18 @@ def clean_headers(headers,drop):
             clean.append(h)
     return clean
 
+
 def de_htmlize(html_str):
     """Removes html escaping."""
     return html_str.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>').replace('&quot;', '"')
+
 
 def guess_ctr(txt,left):
     """Guesses the center of a string based on its left position
     and number of characters"""
     char_width = 5.57 # For Georgian script, 10px.
     return (char_width*len(txt)/2)+left
+
 
 def create_columns(data,sep):
     """Merge data into columns if centers are less than sep apart.
@@ -184,6 +196,7 @@ def create_columns(data,sep):
     #print repr(out).decode("unicode-escape")
     return out
 
+
 def merge_rows(data,sep):
     """Merges data in columns into rows if the vertical separation
     is less than sep. Columns must be sorted top-to-bottom. Modifies
@@ -208,6 +221,7 @@ def merge_rows(data,sep):
         del delete_later[:]
         #print("After merge: "+str(len(a)))
 
+
 # Assumes that the only blank columns will be at the end
 # I hope that is accurate.
 def assign_names(names,columns):
@@ -219,6 +233,7 @@ def assign_names(names,columns):
             out[names[i]] = []
     return out
 
+
 # Searches a column for a row that matches
 # height given in base, with a tolerance of sep.
 def search_column(base,col,sep):
@@ -227,9 +242,10 @@ def search_column(base,col,sep):
             return r[u"txt"]
     return u''
 
+
 def parse_table(pg_div,drop,column_titles):
 
-    all_ft4 = pg_div.findAll(name=u'span', attrs={u"class":u"ft4"})
+    all_ft4 = pg_div.findAll(name=u'span', attrs={u"class":u"ft04"})
 # Clean out the strings we want to ignore
     headers = clean_headers(all_ft4,drop)
     divs = [h.parent.parent for h in headers]
@@ -271,14 +287,38 @@ def parse_table(pg_div,drop,column_titles):
 
     return parsed_table
 
+
 def page0(pg_div,decl):
     raise MalformedDeclarationError("Illegal page number")
+
+
+def check_filled (pg_div, decl_id):
+    # official hasn't filled in report yet
+    notfilled = u"თანამდებობის პირის ქონებრივი მდგომარეობის დეკლარაციის შევსება არაა დასრულებული"
+
+    ft2s = pg_div.findAll(name=u'span', attrs={u"class":u"ft02"})
+    for ft2 in ft2s:
+        if ft2.contents[0] == notfilled:
+            raise BlankDeclarationError(unicode(decl_id))
+
+    return True
+
+
+def page1_ft5s (pg_div, decl):
+    ft5s = pg_div.findAll(name=u'span', attrs={u"class":u"ft05"})
+    if len(ft5s) == 2:
+        # part 1 + <br> + part 2
+        decl[u"position"] = ft5s[0].contents[0] + ' ' + ft5s[0].contents[2]
+        decl[u"work_contact"] = ft5s[1].contents[0] + ' ' + ft5s[1].contents[2]
+    else:
+        raise MalformedDeclarationError("Wrong number of FT5s on page 1")
+
 
 def page1_headers(pg_div,decl,size):
 ########################
 # HEADINGS (FT1)       #
 ########################
-    headings = pg_div.findAll(name=u'span', attrs={u"class":u"ft1"})
+    headings = pg_div.findAll(name=u'span', attrs={u"class":u"ft01"})
 
     decl_id, decl_date, name = None, None, None
 
@@ -305,6 +345,8 @@ def page1_headers(pg_div,decl,size):
     if decl_id == None:
         raise MalformedDeclarationError(u"Couldn't find declaration id")
 
+    check_filled(pg_div, decl_id)
+
     # Only raise if the field is blank AND the size is small.
     # 24260 seems to be about what a truly blank declaration takes up
     if (decl_date == None or name == None) and size < 24300:
@@ -320,13 +362,13 @@ def page1_headers(pg_div,decl,size):
 ########################
 # POSITION (FT5)       #
 ########################
-    job = pg_div.find(name=u'span', attrs={u"class":u"ft5"})
+    job = pg_div.find(name=u'span', attrs={u"class":u"ft05"})
     if job != None: #The job might also be in the FT3s
         decl[u"position"] = job.contents[0]
 ########################
 # DOB, ADDRESS (FT3)   #
 ########################
-    headers = pg_div.findAll(name=u'span', attrs={u"class":u"ft3"})
+    headers = pg_div.findAll(name=u'span', attrs={u"class":u"ft03"})
     divs = [h.parent.parent for h in headers]
     positions = [position_from_style(d[u'style']) for d in divs]
 
@@ -346,12 +388,17 @@ def page1_headers(pg_div,decl,size):
     elif len(headers) == 2:
         decl[u"work_contact"] = txt_pos[0]["txt"]
         decl[u"work_contact"] = txt_pos[1]["txt"]
+    elif len(headers) == 1: # if contains <br>, then pdftohtml marks it as ft05
+        decl[u"place_dob"] = headers[0].contents[0]
+        page1_ft5s(pg_div, decl)
     else:
         raise MalformedDeclarationError("Wrong number of FT3s")
+
 
 def page1_headers_t1(pg_div,decl,size):
     page1_headers(pg_div,decl,size)
     t1_family(pg_div,decl,size)
+
 
 def t1_family(pg_div,decl,size):
 ########################
@@ -361,55 +408,67 @@ def t1_family(pg_div,decl,size):
     column_titles = [u"name",u"surname",u"pob",u"dob",u"relation"]
     decl[u"family"].extend(parse_table(pg_div,discard[u"page1"],column_titles))
 
+
 def t2_estate(pg_div,decl,size):
     init_field(u"real_estate",decl,[])
     column_titles = [u"name_shares",u"prop_type",u"loc_area",u"co_owners"]
     decl[u"real_estate"].extend(parse_table(pg_div,discard[u"page2"],column_titles))
+
 
 def t3_chattel(pg_div,decl,size):
     init_field(u"chattel",decl,[])
     column_titles = [u"name_shares",u"prop_type",u"description",u"co_owners"]
     decl[u"chattel"].extend(parse_table(pg_div,discard[u"page3"],column_titles))
 
+
 def t4_securities(pg_div,decl,size):
     init_field(u"securities",decl,[])
     column_titles = [u"name",u"issuer",u"type",u"price",u"quantity"]
     decl[u"securities"].extend(parse_table(pg_div,discard[u"page4"],column_titles))
+
 
 def t5_deposits(pg_div,decl,size):
     init_field(u"deposits",decl,[])
     column_titles = [u"name",u"bank",u"type",u"balance"]
     decl[u"deposits"].extend(parse_table(pg_div,discard[u"page5"],column_titles))
 
+
 def t6_cash(pg_div,decl,size):
     init_field(u"cash",decl,[])
     column_titles = [u"name",u"amt_currency"]
     decl[u"cash"].extend(parse_table(pg_div,discard[u"page6"],column_titles))
+
 
 def t7_entrepreneur(pg_div,decl,size):
     init_field(u"entrepreneurial",decl,[])
     column_titles = [u"name",u"corp_name_addr",u"particn_type",u"register_agency",u"particn_date",u"income_rec"]
     decl[u"entrepreneurial"].extend(parse_table(pg_div,discard[u"page7"],column_titles))
 
+
 def t8_wages(pg_div,decl,size):
     init_field(u"wages",decl,[])
     column_titles = [u"name",u"desc_workplace",u"desc_job",u"income_rec"]
     decl[u"wages"].extend(parse_table(pg_div,discard[u"page8"],column_titles))
+
 
 def t9_contracts(pg_div,decl,size):
     init_field(u"contracts",decl,[])
     column_titles = [u"name",u"desc_value",u"date_period_agency",u"financial_result"]
     decl[u"contracts"].extend(parse_table(pg_div,discard[u"page9"],column_titles))
 
+
 def t10_gifts(pg_div,decl,size):
     init_field(u"gifts",decl,[])
     column_titles = [u"name",u"desc_value",u"giver_rel"]
     decl[u"gifts"].extend(parse_table(pg_div,discard[u"page10"],column_titles))
 
+
 def t11_misc(pg_div,decl,size):
     init_field(u"other_inc_exp",decl,[])
     column_titles = [u"recip_issuer",u"type",u"amount"]
     decl[u"other_inc_exp"].extend(parse_table(pg_div,discard[u"page11"],column_titles))
+
+
 
 if __name__ == "__main__":
     main()
