@@ -47,7 +47,7 @@ def parse(path):
     try:
         f = open(path)
     except IOError as e:
-        print("Could not find file."+e)
+        print "Could not find file."+ repr(e)
         return None
     
     doc = BeautifulSoup(f)
@@ -58,7 +58,7 @@ def parse(path):
         #print repr(parsed).decode("unicode-escape")
         return parsed
     except BlankDeclarationError, e:
-        print "Blank declaration: %s" %path
+        #print "Blank declaration: %s" %path
         return {u"decl_id": e.value,u"scrape_date": str(datetime.date.today()),u"empty": True}
         #pass
     except MalformedDeclarationError, e:
