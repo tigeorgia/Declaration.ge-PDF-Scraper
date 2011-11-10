@@ -58,7 +58,7 @@ def parse(path):
         #print repr(parsed).decode("unicode-escape")
         return parsed
     except BlankDeclarationError, e:
-        #print "Blank declaration: %s" %path
+        print "Blank declaration: %s" %path
         return {u"decl_id": e.value,u"scrape_date": str(datetime.date.today()),u"empty": True}
         #pass
     except MalformedDeclarationError, e:
@@ -296,16 +296,21 @@ def page0(pg_div,decl):
     raise MalformedDeclarationError("Illegal page number")
 
 
-def check_filled (pg_div, decl_id):
-    # official hasn't filled in report yet
-    notfilled = u"თანამდებობის პირის ქონებრივი მდგომარეობის დეკლარაციის შევსება არაა დასრულებული"
+def check_blank (pg_div, decl_id, decl_date, name, size):
+    if decl_date or name:
+        return
 
+    # Raise if the date or name is blank AND the size is small.
+    # 24260 seems to be about what a truly blank declaration takes up
+    if (decl_date == None or name == None) and size < 24300:
+        raise BlankDeclarationError(unicode(decl_id))
+
+    # Raise if date is blank AND "official hasn't filled in report yet" is present
+    notfilled = u"თანამდებობის პირის ქონებრივი მდგომარეობის დეკლარაციის შევსება არაა დასრულებული"
     ft2s = pg_div.findAll(name=u'span', attrs={u"class":u"ft02"})
     for ft2 in ft2s:
         if ft2.contents[0] == notfilled:
             raise BlankDeclarationError(unicode(decl_id))
-
-    return True
 
 
 def page1_ft5s (pg_div, decl):
@@ -349,19 +354,10 @@ def page1_headers(pg_div,decl,size):
     if decl_id == None:
         raise MalformedDeclarationError(u"Couldn't find declaration id")
 
-    check_filled(pg_div, decl_id)
-
-    # Only raise if the field is blank AND the size is small.
-    # 24260 seems to be about what a truly blank declaration takes up
-    if (decl_date == None or name == None) and size < 24300:
-        decl[u"decl_id"] = decl_id
-        raise BlankDeclarationError(unicode(decl_id))
-        # Otherwise, continue with the parse.
-
-    else:
-        decl[u"decl_id"] = decl_id
-        decl[u"decl_date"] = decl_date
-        decl[u"name"] = name
+    check_blank(pg_div, decl_id, decl_date, name, size)
+    decl[u"decl_id"] = decl_id
+    decl[u"decl_date"] = decl_date
+    decl[u"name"] = name
 
 ########################
 # POSITION (FT5)       #
