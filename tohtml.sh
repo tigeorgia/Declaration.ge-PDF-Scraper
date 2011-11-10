@@ -4,7 +4,7 @@
 #
 # It takes two parameters:
 # $1 - directory to read PDF files from
-# $2 - direcotyr to write HTML files to
+# $2 - directory to write HTML files to
 #############################################################################
 
 BASEDIR=$PWD
