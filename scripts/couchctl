@@ -1,0 +1,24 @@
+#!/bin/bash
+HOST="http://192.168.0.111:5984"
+CURL="/usr/bin/curl"
+COMMAND="$1"
+
+case $COMMAND in
+    "del")
+        # $2 == db 
+        $CURL -X DELETE $HOST/$2;;
+    "upview")
+        # $2 == db, $3 == design document
+        $CURL -X PUT $HOST/$2/_design/$3 -d @$3.json;;
+    "downview")
+        # $2 == db, $3 == design document
+        $CURL -X GET $HOST/$2/_design/$3 > $3.json;;
+    "repviews") 
+        # $2 == source db, $3 == target db
+        $CURL -X POST -H "Content-Type: application/json" -d "{\"source\": \"$2\", \"target\": \"$3\", \"doc_ids\": [\"_design/forexport\", \"_design/basic\"]}" "$HOST/_replicate";;
+    "rep")
+        # $2 == source db, $3 == target db
+        #$CURL -X DELETE $HOST/$3;
+        $CURL -X PUT $HOST/$3;
+        $CURL -X POST -H "Content-Type: application/json" -d "{\"source\": \"$2\", \"target\": \"$3\"}" "$HOST/_replicate";;
+esac

@@ -1,0 +1,45 @@
+{
+"_id":"_design/forexport",
+"_rev":"4-bd54ea12da4c23908a68c55a0c98113f",
+"language":"javascript",
+"views":{
+    "securities": {
+    "map": "function(doc) {\n      if(!doc.blank){\n            var date = (doc.decl_date) ? doc.decl_date : \"\";\n                if(doc.securities.length > 0){\n                            doc.securities.forEach(function(i){\n                                            emit([doc.decl_id,doc.scrape_date,doc.name,date], [i.name,i.issuer,i.type,i.price,i.quantity]);\n                            });\n                }\n      }\n}"
+    },
+    "recent-items": {
+         "map": "function(doc) {\n  if (doc.created_at) {\n    emit(doc.created_at, doc);\n  }\n};"
+    },
+    "family": {
+         "map": "function(doc) {\n      if(!doc.blank){\n            var date = (doc.decl_date) ? doc.decl_date : \"\";\n                if(doc.family.length > 0){\n                            doc.family.forEach(function(prsn){\n                                            emit([doc.decl_id,doc.scrape_date,doc.name,date], [prsn.name,prsn.surname,prsn.pob,prsn.dob,prsn.relation]);\n                            });\n                }\n      }\n}"
+    },
+    "contracts": {
+         "map": "function(doc) {\n      if(!doc.blank){\n            var date = (doc.decl_date) ? doc.decl_date : \"\";\n                if(doc.contracts.length > 0){\n                            doc.contracts.forEach(function(i){\n                                            emit([doc.decl_id,doc.scrape_date,doc.name,date], [i.name,i.desc_value,i.date_period_agency,i.financial_result]);\n                            });\n                }\n      }\n}"
+    },
+    "deposits": {
+         "map": "function(doc) {\n      if(!doc.blank){\n            var date = (doc.decl_date) ? doc.decl_date : \"\";\n                if(doc.deposits.length > 0){\n                            doc.deposits.forEach(function(i){\n                                            emit([doc.decl_id,doc.scrape_date,doc.name,date], [i.name,i.bank,i.type,i.balance]);\n                            });\n                }\n      }\n}"
+    },
+    "cash": {
+        "map": "function(doc) {\n      if(!doc.blank){\n            var date = (doc.decl_date) ? doc.decl_date : \"\";\n                if(doc.cash.length > 0){\n                            doc.cash.forEach(function(i){\n                                            emit([doc.decl_id,doc.scrape_date,doc.name,date], [i.name,i.amt_currency]);\n                            });\n                }\n      }\n}"
+    },
+    "gifts": {
+        "map": "function(doc) {\n      if(!doc.blank){\n            var date = (doc.decl_date) ? doc.decl_date : \"\";\n                if(doc.gifts.length > 0){\n                            doc.gifts.forEach(function(i){\n                                            emit([doc.decl_id,doc.scrape_date,doc.name,date], [i.name,i.desc_value,i.giver_rel]);\n                            });\n                }\n      }\n}"
+    },
+   "entrepreneurial": {
+       "map": "function(doc) {\n      if(!doc.blank){\n            var date = (doc.decl_date) ? doc.decl_date : \"\";\n                if(doc.entrepreneurial.length > 0){\n                            doc.entrepreneurial.forEach(function(i){\n                                            emit([doc.decl_id,doc.scrape_date,doc.name,date], [i.name,i.corp_name_addr,i.particn_type,i.register_agency,i.particn_date,i.income_rec]);\n                            });\n                }\n      }\n}"
+    },
+   "real_estate": {
+       "map": "function(doc) {\n      if(!doc.blank){\n            var date = (doc.decl_date) ? doc.decl_date : \"\";\n                if(doc.real_estate.length > 0){\n                            doc.real_estate.forEach(function(i){\n                                            emit([doc.decl_id,doc.scrape_date,doc.name,date], [i.name_shares,i.prop_type,i.loc_area,i.co_owners]);\n                            });\n                }\n      }\n}"
+    },
+   "wages": {
+       "map": "function(doc) {\n      if(!doc.blank){\n            var date = (doc.decl_date) ? doc.decl_date : \"\";\n                if(doc.wages.length > 0){\n                            doc.wages.forEach(function(i){\n                                            emit([doc.decl_id,doc.scrape_date,doc.name,date], [i.name,i.desc_workplace,i.desc_job,i.income_rec]);\n                            });\n                }\n      }\n}"
+    },
+   "property": {
+       "map": "function(doc) {\n      if(!doc.blank){\n            var date = (doc.decl_date) ? doc.decl_date : \"\";\n                if(doc.chattel.length > 0){\n                            doc.chattel.forEach(function(i){\n                                            emit([doc.decl_id,doc.scrape_date,doc.name,date], [i.name_shares,i.prop_type,i.description,i.co_owners]);\n                            });\n                }\n      }\n}"
+    },
+   "other_incl_expenses": {
+       "map": "function(doc) {\n      if(!doc.blank){\n            var date = (doc.decl_date) ? doc.decl_date : \"\";\n                if(doc.other_inc_exp.length > 0){\n                            doc.other_inc_exp.forEach(function(i){\n                                            emit([doc.decl_id,doc.scrape_date,doc.name,date], [i.recip_issuer,i.type,i.amount]);\n                            });\n                }\n      }\n}"
+    },
+   "biography": {
+       "map": "function(doc) {\n  if(!doc.blank){\n        var date = (doc.decl_date) ? doc.decl_date : \"\";\n            emit([doc.decl_id,doc.scrape_date,doc.name,date],[doc.position,doc.work_contact,doc.place_dob,doc.scrape_date]);\n  }\n}"
+    }
+}}
