@@ -55,12 +55,14 @@ def run_view (db, outdir, name):
     rows = get_rows(db, name)
     out = []
     for row in rows:
-        data = []
+        data = ''
         for k in row.key:
-            if k: data.append(k.encode('utf-8'))
+            if k: data += k.encode('utf-8')
+            data += CSV['sep']
         for v in row.value:
-            if v: data.append(v.encode('utf-8'))
-        out.append(CSV['sep'].join(data))
+            if v: data += v.encode('utf-8')
+            data += CSV['sep']
+        out.append(data[:-1])
 
     with open(csv, 'w') as fh:
         fh.write("\n".join(out))

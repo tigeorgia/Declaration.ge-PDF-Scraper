@@ -40,6 +40,6 @@
        "map": "function(doc) {\n      if(!doc.blank){\n            var date = (doc.decl_date) ? doc.decl_date : \"\";\n                if(doc.other_inc_exp.length > 0){\n                            doc.other_inc_exp.forEach(function(i){\n                                            emit([doc.decl_id,doc.scrape_date,doc.name,date], [i.recip_issuer,i.type,i.amount]);\n                            });\n                }\n      }\n}"
     },
    "biography": {
-       "map": "function(doc) {\n  if(!doc.blank){\n        var date = (doc.decl_date) ? doc.decl_date : \"\";\n            emit([doc.decl_id,doc.scrape_date,doc.name,date],[doc.position,doc.work_contact,doc.place_dob,doc.scrape_date]);\n  }\n}"
+       "map": "function(doc) {\n  if(!doc.blank){\n        var date = (doc.decl_date) ? doc.decl_date : \"\";\n            emit([doc.decl_id,doc.scrape_date,doc.name,date],[doc.position,doc.work_contact,doc.place_dob]);\n  }\n}"
     }
 }}
