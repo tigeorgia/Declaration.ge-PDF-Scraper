@@ -8,7 +8,7 @@ $ python db.py DIRECTORY
 DIRECTORY holds the reports as PDF + converted to HTML
 """
 
-import os, sys, getopt, hashlib
+import os, sys, getopt, hashlib, marshal
 import couchdb
 from uuid import uuid4 # couchdb doc: uuids client-side, HTTP POST not idempotent
 
@@ -61,26 +61,16 @@ def get_db ():
 
 
 
-def mkhash (html):
-    """Create a hash value for a PDF file.
+def mkhash (doc):
+    """Create a hash value of the scraped data
 
-    @param html name of the HTML file corresponding to the hashed PDF
-    @return string message digest of the PDF file
+    @param doc document containing scraped data
+    @return string message digest of the scraped data
     """
-    h = hashlib.sha256()
-    pdf = html.split('.')[:-1]
-    pdf.append('pdf')
-    pdf = '.'.join(pdf)
-
-    try:
-        with open(pdf, 'r') as f:
-            for line in f:
-                h.update(line)
-    except IOError, e:
-        print "Couldn't find file to create hash: %s." % pdf
-        return None
-
-    return h.hexdigest()
+    # (c)pickling yields different hash on same data...
+    #dump = cPickle.dumps(doc)
+    dump = marshal.dumps(doc)
+    return hashlib.sha256(dump).hexdigest()
 
 
 
@@ -148,7 +138,7 @@ def main ():
                 doc = parse.parse(f)
                 prs_ct += 1
                 if doc:
-                    doc['hash'] = mkhash(f)
+                    doc['hash'] = mkhash(doc)
                     if add_to_db(db, doc):
                         add_ct += 1
             except MalformedDeclarationError:
