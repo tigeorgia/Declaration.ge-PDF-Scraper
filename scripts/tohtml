@@ -16,7 +16,7 @@ if [ -z "$1" ]; then
     echo "Need directory to read PDF files from!"
     exit 1;
 fi
-if [ -z "$1" ]; then
+if [ -z "$2" ]; then
     echo "Need directory to write HTML files to!"
     exit 2;
 fi
