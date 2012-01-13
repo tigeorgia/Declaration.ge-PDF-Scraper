@@ -42,4 +42,10 @@ Then you can run a python script to collect the CSV data and dump it into a dire
 $ csv/csv.py csvdata/
 
 
+Once you have gathered some data, you can run the reporting tool to see
+differences between the latest two scrape runs. It will output HTML:
+
+$ python report.py > result.html
+
+
 Enjoy.
