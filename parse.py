@@ -59,7 +59,8 @@ def parse(path):
         return parsed
     except BlankDeclarationError, e:
         #print "Blank declaration: %s" %path
-        return {u"decl_id": e.value,u"scrape_date": str(datetime.date.today()),u"empty": True}
+        scrape_date = doc.find('meta', attrs={u'name':'date'})['content'][:10]
+        return {u"decl_id": e.value,u"scrape_date": scrape_date, u"empty": True}
         #pass
     except MalformedDeclarationError, e:
         #pass
@@ -83,7 +84,7 @@ def parse(path):
 
 def output(doc,size):
     decl_obj = {} # Storage variable for the data.
-    decl_obj[u"scrape_date"] = str(datetime.date.today())
+    decl_obj[u"scrape_date"] = doc.find('meta', attrs={u'name':'date'})['content'][:10]
 
     # Document pages are represented by container divs that are
     # children of root element.
