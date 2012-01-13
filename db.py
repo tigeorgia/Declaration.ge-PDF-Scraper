@@ -67,9 +67,13 @@ def mkhash (doc):
     @param doc document containing scraped data
     @return string message digest of the scraped data
     """
+    # remove scrape date from hash
+    hashdoc = doc.copy()
+    del hashdoc['scrape_date']
+
     # (c)pickling yields different hash on same data...
-    #dump = cPickle.dumps(doc)
-    dump = marshal.dumps(doc)
+    #dump = cPickle.dumps(hashdoc)
+    dump = marshal.dumps(hashdoc)
     return hashlib.sha256(dump).hexdigest()
 
 
