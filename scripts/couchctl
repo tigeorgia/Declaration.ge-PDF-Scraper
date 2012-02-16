@@ -1,24 +1,29 @@
 #!/bin/bash
-HOST="http://192.168.0.111:5984"
-CURL="/usr/bin/curl"
-COMMAND="$1"
 
+# edit this to suit your configuration
+HOST="http://localhost:5984"
+DB="declarations"
+BASENAME="/usr/bin/basename"
+CUT="/usr/bin/cut"
+CURL="/usr/bin/curl"
+
+COMMAND="$1"
 case $COMMAND in
     "del")
-        # $2 == db 
-        $CURL -X DELETE $HOST/$2;;
+        $CURL -X DELETE $HOST/$DB;;
     "upview")
-        # $2 == db, $3 == design document
-        $CURL -X PUT $HOST/$2/_design/$3 -d @$3.json;;
+        # $2 == design document
+        docname=`$BASENAME $2 | $CUT -f1 -d.`
+        $CURL -X PUT $HOST/$DB/_design/$docname --data @$2;;
     "downview")
-        # $2 == db, $3 == design document
-        $CURL -X GET $HOST/$2/_design/$3 > $3.json;;
-    "repviews") 
-        # $2 == source db, $3 == target db
-        $CURL -X POST -H "Content-Type: application/json" -d "{\"source\": \"$2\", \"target\": \"$3\", \"doc_ids\": [\"_design/forexport\", \"_design/basic\"]}" "$HOST/_replicate";;
+        # $2 == design document
+        $CURL -X GET $HOST/$DB/_design/$2 > $2.json;;
+    "repviews")
+        # $2 == target db
+        $CURL -X POST -H "Content-Type: application/json" -d "{\"source\": \"$DB\", \"target\": \"$2\", \"doc_ids\": [\"_design/forexport\", \"_design/basic\"]}" "$HOST/_replicate";;
     "rep")
-        # $2 == source db, $3 == target db
-        #$CURL -X DELETE $HOST/$3;
-        $CURL -X PUT $HOST/$3;
-        $CURL -X POST -H "Content-Type: application/json" -d "{\"source\": \"$2\", \"target\": \"$3\"}" "$HOST/_replicate";;
+        # $2 == target db
+        #$CURL -X DELETE $HOST/$2;
+        $CURL -X PUT $HOST/$2;
+        $CURL -X POST -H "Content-Type: application/json" -d "{\"source\": \"$DB\", \"target\": \"$2\"}" "$HOST/_replicate";;
 esac

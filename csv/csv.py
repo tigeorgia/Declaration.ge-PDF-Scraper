@@ -9,7 +9,7 @@ import sys, os, couchdb
 
 DB = {
     'url': 'http://localhost:5984',
-    'name' : 'd12'
+    'name' : 'declarations'
 }
 VIEW_ROOT = 'forexport/'
 VIEWS = [

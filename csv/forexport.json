@@ -1,6 +1,4 @@
 {
-"_id":"_design/forexport",
-"_rev":"4-bd54ea12da4c23908a68c55a0c98113f",
 "language":"javascript",
 "views":{
     "securities": {
