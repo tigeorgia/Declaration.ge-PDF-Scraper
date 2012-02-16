@@ -38,7 +38,7 @@ It also ships with a few tools to export the contents of the database to CSV.
 Edit variables HOST and DB in couchctl to connect to your couchdb.
 Then install the design document for CSV export into the database (once!):
 
-$ ./scripts/couchctl upview DATABASE csv/forexport.json
+$ ./scripts/couchctl upview csv/forexport.json
 
 Edit dictionary DB in csv/csv.py to connect to your couchdb.
 Then you can repeatedly run a python script to collect the CSV data and dump it into a directory:
