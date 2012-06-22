@@ -11,8 +11,11 @@
 #############################################################################
 
 SRC="http://declaration.ge/csb/report/report.seam?id="
+ENG="&lang=2"
 STOP=1000
 CURL=/usr/bin/curl
+EN_FOLDER="en"
+KA_FOLDER="ka"
 
 #############################################################################
 
@@ -26,24 +29,31 @@ CURL=/usr/bin/curl
 if [ -n "$1" ]; then
     echo "Entering $1"
     cd $1
+    echo "Making language directories"
+    mkdir $EN_FOLDER && mkdir $KA_FOLDER
 fi
 
 c=0
 miss=0
+count=0
 while [ $miss -le $STOP ]
 do
     echo "Trying report ID $c"
-	$CURL --progress-bar --output report-$c.pdf "$SRC$c" 
-	if [ ! -e report-$c.pdf ]
+	$CURL --progress-bar --output $KA_FOLDER/report-$c.pdf "$SRC$c"
+	if [ ! -e $KA_FOLDER/report-$c.pdf ]
 	then
 		miss=`expr $miss + 1`
 	else
 		miss=0
+        count=`expr $count + 1`
+        # Once we know the Georgian version exists, try to download Eng.
+        $CURL --progress-bar --output $EN_FOLDER/report-$c.pdf "$SRC$c$ENG"
 	fi
 	c=`expr $c + 1`
 	#echo $c, $miss
 done
 
+echo "Downloaded $count declarations (not files)."
 if [ -n "$1" ]; then
     echo "Leaving $1"
     cd -
