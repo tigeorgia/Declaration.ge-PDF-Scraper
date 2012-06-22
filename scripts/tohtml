@@ -8,8 +8,8 @@
 #############################################################################
 
 BASEDIR=$PWD
-PDFTOHTML=/usr/bin/pdftohtml
-
+#PDFTOHTML=/usr/bin/pdftohtml
+PDFTOHTML=/wherever/poppler-0.16.7/utils/pdftohtml
 #############################################################################
 
 if [ -z "$1" ]; then
