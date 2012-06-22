@@ -2,7 +2,7 @@
 # vim: set fileencoding=utf-8
 
 import incomeExceptions 
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 # Figures out which table we're parsing based on header information
 def detect_table(num,ft2s):
@@ -10,14 +10,14 @@ def detect_table(num,ft2s):
         # Guess page number first; usually page num == table num
         for ft2 in ft2s: 
             #print "Guessing table %d" %num
-            #print (header_strings[num][0].encode('utf-8'))
-            #print (ft2.contents[0].encode('utf-8'))
+            #print "Header strings:" +(header_strings[num][0].encode('utf-8'))
+            #print "FT2: "+(ft2.contents[0].encode('utf-8'))
             if ft2.contents[0] in header_strings[num]:
                 #print "Detected table %d (guessed right)"%num
                 return num
 
     for ft2 in ft2s:
-        #print "Guessed wrong, trying others"
+        print "Guessed wrong, trying others"
         for i in range(1,len(header_strings)): # 1-indexed
             #print i
             #print ft2.contents[0]
@@ -37,7 +37,7 @@ header_strings = [[""],# 1-indexed
     [u"თქვენი, თქვენი ოჯახის წევრის საკუთრებაში არსებული ნაღდი ფულადი თანხა, რომლის ოდენობა აღემატება 4 000 ლარს"],
     [u"საქართველოში ან სხვა ქვეყანაში თქვენი, თქვენი ოჯახის წევრის მონაწილეობა სამეწარმეო საქმიანობაში"],
     [u"საქართველოში ან სხვა ქვეყანაში, თქვენი, თქვენი ოჯახის წევრის მიერ შესრულებული ნებისმიერი ანაზღაურებადი სამუშაო, სამეწარმეო საქმიანობაში მონაწილეობის გარდა"],
-    [u"საქართველოში ან სხვა ქვეყანაში თქვენი, თქვენი ოჯახის წევრის მიერ წინა წლის პირველი იანვრიდან დღემდე დადებული &nbsp;ან/და მოქმედი ხელშეკრულება, რომლის საგნის"], 
+    [u"საქართველოში ან სხვა ქვეყანაში თქვენი, თქვენი ოჯახის წევრის მიერ წინა წლის პირველი იანვრიდან დღემდე დადებული  ან/და მოქმედი ხელშეკრულება, რომლის საგნის"], 
     [u"თქვენი, თქვენი ოჯახის წევრის მიერ წინა წლის პირველი იანვრიდან 31 დეკემბრის ჩათვლით მიღებული საჩუქარი, რომლის ღირებულება აღემატება 500 ლარს"],
     [u"წინა წლის პირველი იანვრიდან 31 დეკემბრის ჩათვლით თქვენი ან თქვენი ოჯახის წევრის ნებისმიერი შემოსავალი ან/და გასავალი, რომლის ოდენობა (ღირებულება)"], 
 ]

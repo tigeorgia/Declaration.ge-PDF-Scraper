@@ -9,7 +9,7 @@ import sys
 import getopt
 #import html5lib
 #from html5lib import treebuilders
-from BeautifulSoup import BeautifulSoup #Deprecated but still the best
+from bs4 import BeautifulSoup #Deprecated but still the best
 import datetime
 import json
 import codecs
