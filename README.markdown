@@ -9,7 +9,8 @@ will first need to convert it to HTML. To do this, download
 [poppler](http://poppler.freedesktop.org/ "pdf to html") and install it. It
 contains pdftohtml which is used by scripts/tohtml.
 Tested with pdftohtml from poppler 0.16.7, as found in Ubuntu 11.10.
-Does NOT work with poppler 0.18.4 in Ubuntu 12.04. For now, build from source.
+Does NOT work with poppler 0.18.4 in Ubuntu 12.04. For now, build from source,
+and change the appropriate line in scripts/tohtml.
 
 Download the reports:
 
