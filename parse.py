@@ -335,8 +335,8 @@ def page1_ft5s (pg_div, decl):
     ft5s = pg_div.findAll(name=u'span', attrs={u"class":u"ft05"})
     if len(ft5s) == 2:
         # part 1 + <br> + part 2
-        decl[u"position"] = ft5s[0].contents[0] + ' ' + ft5s[0].contents[2]
-        decl[u"work_contact"] = ft5s[1].contents[0] + ' ' + ft5s[1].contents[2]
+        decl[u"biography"][u"position"] = ft5s[0].contents[0] + ' ' + ft5s[0].contents[2]
+        decl[u"biography"][u"work_contact"] = ft5s[1].contents[0] + ' ' + ft5s[1].contents[2]
     else:
         raise MalformedDeclarationError("Wrong number of FT5s on page 1")
 
@@ -353,7 +353,6 @@ def page1_headers(pg_div,decl,size):
         txt = head.contents[0]
         if txt in discard[u"page1"]:
             continue
-
         if txt.isdigit(): # Page number only
             continue
         
@@ -375,14 +374,14 @@ def page1_headers(pg_div,decl,size):
     check_blank(pg_div, decl_id, decl_date, name, size)
     decl[u"decl_id"] = decl_id
     decl[u"decl_date"] = decl_date
-    decl[u"name"] = name
+    decl[u"biography"][u"name"] = name
 
 ########################
 # POSITION (FT5)       #
 ########################
     job = pg_div.find(name=u'span', attrs={u"class":u"ft05"})
     if job != None: #The job might also be in the FT3s
-        decl[u"position"] = job.contents[0]
+        decl[u"biography"][u"position"] = job.contents[0]
 ########################
 # DOB, ADDRESS (FT3)   #
 ########################
@@ -400,14 +399,14 @@ def page1_headers(pg_div,decl,size):
     txt_pos.sort(key=lambda c: c[u"pos"][u"top"])
 
     if len(headers) == 3: # There's a job
-        decl[u"position"] = txt_pos[0]["txt"]
-        decl[u"work_contact"] = txt_pos[1]["txt"]
-        decl[u"place_dob"] = txt_pos[2]["txt"]
+        decl[u"biography"][u"position"] = txt_pos[0]["txt"]
+        decl[u"biography"][u"work_contact"] = txt_pos[1]["txt"]
+        decl[u"biography"][u"place_dob"] = txt_pos[2]["txt"]
     elif len(headers) == 2:
-        decl[u"work_contact"] = txt_pos[0]["txt"]
-        decl[u"work_contact"] = txt_pos[1]["txt"]
+        decl[u"biography"][u"work_contact"] = txt_pos[0]["txt"]
+        decl[u"biography"][u"work_contact"] = txt_pos[1]["txt"]
     elif len(headers) == 1: # if contains <br>, then pdftohtml marks it as ft05
-        decl[u"place_dob"] = headers[0].contents[0]
+        decl[u"biography"][u"place_dob"] = headers[0].contents[0]
         page1_ft5s(pg_div, decl)
     else:
         raise MalformedDeclarationError("Wrong number of FT3s")
