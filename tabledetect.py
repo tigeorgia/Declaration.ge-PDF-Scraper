@@ -33,7 +33,7 @@ def detect_table(num,ft2s):
                 return num
 
     for ft2 in ft2s:
-        print "Guessed wrong, trying others"
+        #print "Guessed wrong, trying others"
         for i in range(1,len(header_strings)): # 1-indexed
             #print i
             #print ft2.contents[0]
