@@ -82,10 +82,6 @@ def parse(path):
     except MalformedDeclarationError, e:
         #pass
         raise MalformedDeclarationError(repr(e.value)+path)
-    except Exception, e:
-        #pass
-        raise Exception(repr(e)+path)
-        #print "Very Malformed Declaration %s %s" %(repr(e),path)
     #else:
         #pass
         #print "Success. %s" %path
@@ -374,6 +370,7 @@ def page1_headers(pg_div,decl,size):
     check_blank(pg_div, decl_id, decl_date, name, size)
     decl[u"decl_id"] = decl_id
     decl[u"decl_date"] = decl_date
+    decl[u"biography"] = {}
     decl[u"biography"][u"name"] = name
 
 ########################
