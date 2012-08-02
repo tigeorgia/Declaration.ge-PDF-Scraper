@@ -86,7 +86,6 @@ def parse(path):
         #pass
         #print "Success. %s" %path
 
-
 #def print_list(item):
 #    for e in item:
 #        if isinstance(e,collections.Iterable) and not isinstance(e,str):
@@ -96,7 +95,7 @@ def parse(path):
 
 
 def output(doc,size):
-    decl_obj = {} # Storage variable for the data.
+    decl_obj = {u"empty": True} # Storage variable for the data.
     decl_obj[u"scrape_date"] = doc.find('meta', attrs={u'name':'date'})['content'][:10]
 
     # Document pages are represented by container divs that are
@@ -367,7 +366,9 @@ def page1_headers(pg_div,decl,size):
     if decl_id == None:
         raise MalformedDeclarationError(u"Couldn't find declaration id")
 
+    #Will raise Exception if blank.
     check_blank(pg_div, decl_id, decl_date, name, size)
+    decl[u"empty"] = False
     decl[u"decl_id"] = decl_id
     decl[u"decl_date"] = decl_date
     decl[u"biography"] = {}
