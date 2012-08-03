@@ -52,6 +52,7 @@ fi
 c=0
 miss=0
 count=0
+files=0
 while [ $miss -le $STOP ]
 do
     echo "Trying report ID $c"
@@ -61,15 +62,20 @@ do
 		miss=`expr $miss + 1`
 	else
 		miss=0
-        count=`expr $count + 1`
-        # Once we know the Georgian version exists, try to download Eng.
-        $CURL --progress-bar --output $EN_FOLDER/report-$c.pdf "$SRC$c$ENG"
+        	count=`expr $count + 1`
+		files=`expr $files + 1`
+        	# Once we know the Georgian version exists, try to download Eng.
+        	$CURL --progress-bar --output $EN_FOLDER/report-$c.pdf "$SRC$c$ENG"
+		if [ -e $EN_FOLDER/report-$c.pdf ]
+		then
+			files=`expr $files + 1`
+		fi
 	fi
 	c=`expr $c + 1`
 	#echo $c, $miss
 done
 
-echo "Downloaded $count declarations (not files)."
+echo "Downloaded $count declarations and $files total files."
 if [ -n "$1" ]; then
     echo "Leaving $1"
     cd -
