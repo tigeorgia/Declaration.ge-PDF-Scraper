@@ -405,6 +405,7 @@ def page1_headers(pg_div,decl,size):
     elif len(headers) == 2:
         decl[u"biography"][u"work_contact"] = txt_pos[0]["txt"]
         decl[u"biography"][u"work_contact"] = txt_pos[1]["txt"]
+        decl[u"biography"][u"place_dob"] = ""
     elif len(headers) == 1: # if contains <br>, then pdftohtml marks it as ft05
         decl[u"biography"][u"place_dob"] = headers[0].contents[0]
         page1_ft5s(pg_div, decl)
