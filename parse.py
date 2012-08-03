@@ -374,6 +374,8 @@ def page1_headers(pg_div,decl,size):
     decl[u"biography"] = {}
     decl[u"biography"][u"name"] = name
 
+    print(decl[u"decl_id"])
+
 ########################
 # POSITION (FT5)       #
 ########################
