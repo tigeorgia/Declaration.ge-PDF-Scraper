@@ -3,6 +3,13 @@ Declaration.ge Scraper Suite
 
 [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/ "Beautiful Soup") is required.
 
+NOTE: [declaration.ge](http://declaration.ge "Declaration.ge") was
+recently updated to include English declarations. The download script
+will download Georgian and English declarations into separate folders
+("en" and "ka"), but the parse script does not work for English
+at the moment, only Georgian. You will need to point the scripts
+at reports/ka in order to target the Georgian files only.
+
 In order to scrape a PDF file downloaded from
 [declaration.ge](http://declaration.ge/ "Declaration.ge"), you
 will first need to convert it to HTML. You will need to use
@@ -29,16 +36,18 @@ $ python ./parse.py reports/report-ID.html
 to parse the HTML into a Python object. What you do with that object is up to
 you. Or to import all reports into a couchdb:
 
-$ python ./db.py reports/
+$ python ./db.py reports/ka
 
 db.py will take a directory of HTML (+ PDF) files, parse them (+ build a hash
 of the PDF files), and load them into a CouchDB database.
 
+Or to dump directly to CSV (pipe-delimited):
+$ python ./file_output.py reports/ka
 
 CSV
 ---
-You can directly export to CSV using file_export.py, a few tools are provided
-to export the contents of a CouchDB database to CSV.
+You can directly export to CSV using file_export.py (see above), and a few 
+tools are provided to export the contents of a CouchDB database to CSV.
 
 Edit variables HOST and DB in couchctl to connect to your couchdb.
 Then install the design document for CSV export into the database (once!):
