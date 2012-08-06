@@ -5,12 +5,14 @@ Declaration.ge Scraper Suite
 
 In order to scrape a PDF file downloaded from
 [declaration.ge](http://declaration.ge/ "Declaration.ge"), you
-will first need to convert it to HTML. To do this, download
-[poppler](http://poppler.freedesktop.org/ "pdf to html") and install it. It
-contains pdftohtml which is used by scripts/tohtml.
-Tested with pdftohtml from poppler 0.16.7, as found in Ubuntu 11.10.
-Does NOT work with poppler 0.18.4 in Ubuntu 12.04. For now, build from source,
-and change the appropriate line in scripts/tohtml.
+will first need to convert it to HTML. You will need to use
+[poppler](http://poppler.freedesktop.org/ "pdf to html"), which 
+contains pdftohtml which is used by scripts/tohtml. However, not all
+versions of pdftohtml are guaranteed to work. The source for poppler
+0.16.7 is included for your convenience; just follow the compile
+instructions and you will be able to find the compiled pdftohtml binary
+under poppler-0.16.7/utils. You'll need to change the PDFTOHTML path in
+the tohtml script accordingly.
 
 Download the reports:
 
@@ -35,7 +37,8 @@ of the PDF files), and load them into a CouchDB database.
 
 CSV
 ---
-It also ships with a few tools to export the contents of the database to CSV.
+You can directly export to CSV using file_export.py, a few tools are provided
+to export the contents of a CouchDB database to CSV.
 
 Edit variables HOST and DB in couchctl to connect to your couchdb.
 Then install the design document for CSV export into the database (once!):
