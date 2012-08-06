@@ -27,11 +27,11 @@ $ ./scripts/download reports/
 
 Convert them to HTML:
 
-$ ./scripts/tohtml reports/ reports/
+$ ./scripts/tohtml reports/ka/ reports/ka/
 
 Then run:
 
-$ python ./parse.py reports/report-ID.html
+$ python ./parse.py reports/ka/report-ID.html
 
 to parse the HTML into a Python object. What you do with that object is up to
 you. Or to import all reports into a couchdb:
