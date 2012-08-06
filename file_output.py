@@ -224,7 +224,7 @@ def main ():
 
     for f in out_files.itervalues():
         f.close()
-    print "Considered %d files. Successfully parsed %d." % (tot_ct, prs_ct, add_ct)
+    print "Considered %d files. Successfully parsed %d." % (tot_ct, prs_ct)
 
 
 
