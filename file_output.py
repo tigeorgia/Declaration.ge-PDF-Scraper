@@ -163,7 +163,7 @@ def output_csv(parsed,sep,files):
     within the declaration object. The values for each table will be
     appended to these file objects.
     """
-    header = ''.join([parsed[u"decl_id"],sep,parsed[u"scrape_date"],sep,parsed[u"biography"]["name"],sep])
+    header = ''.join([parsed[u"decl_id"],sep,parsed[u"scrape_date"],sep,parsed[u"biography"]["name"]])
     # For each output file (corresponding to tables in the declaration)
     #print header
     for table in files.iterkeys():
@@ -174,7 +174,7 @@ def output_csv(parsed,sep,files):
                 # Append each column's value in the specified order
                 for key in output_ordering[table]:
                     line = line + row[key] + sep
-                files[table].write(header+sep+line+"\n")
+                files[table].write(header+sep+line[:-1]+"\n")
         else:# Data in biography key not drawn from table.
             header = ''.join([parsed[u"decl_id"],sep,parsed[u"scrape_date"]])
             bio = parsed[u"biography"]
