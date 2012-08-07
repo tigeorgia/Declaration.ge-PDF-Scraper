@@ -35,17 +35,16 @@ from incomeExceptions import BlankDeclarationError, MalformedDeclarationError
 # This specifies the ordering of the resulting CSV file.
 output_ordering = {
     u"header":[
-    # First three columns of all files except biography.csv
+    # First four columns of all files
     # Added for documentation purposes, the header is specified manually.
-       "decl_id",
-       "scrape_date",
-       "name"
+        u"decl_id",
+        u"scrape_date",
+        u"name",
+        u"decl_date",
     ],
     u"biography":[
         # Added for documentation purposes, the ordering of biography.csv
         # is specified manually.
-        u"name",
-        u"decl_date",
         u"position",
         u"work_contact",
         u"place_dob",
@@ -163,27 +162,24 @@ def output_csv(parsed,sep,files):
     within the declaration object. The values for each table will be
     appended to these file objects.
     """
-    header = ''.join([parsed[u"decl_id"],sep,parsed[u"scrape_date"],sep,parsed[u"biography"]["name"]])
+    header_array = []
+    for item in [parsed[u"decl_id"],parsed[u"scrape_date"],parsed[u"biography"][0]["name"],parsed[u"decl_date"]]:
+        if item:
+            header_array.extend([item,sep])
+        else:
+            header_array.extend([u"",sep])
+    header = ''.join(header_array)
     # For each output file (corresponding to tables in the declaration)
     #print header
     for table in files.iterkeys():
         # For each line in the table
-        if table != u"biography": # Bio is a special case, dealt with later
-            for row in parsed[table]:
-                line = ''
-                # Append each column's value in the specified order
-                for key in output_ordering[table]:
-                    line = line + row[key] + sep
-                files[table].write(header+sep+line[:-1]+"\n")
-        else:# Data in biography key not drawn from table.
-            header = ''.join([parsed[u"decl_id"],sep,parsed[u"scrape_date"]])
-            bio = parsed[u"biography"]
-            line = '' + unicode(bio[u"name"])+sep +\
-                        unicode(parsed[u"decl_date"])+sep +\
-                        unicode(bio[u"position"])+sep +\
-                        unicode(bio[u"work_contact"])+sep +\
-                        unicode(bio[u"place_dob"])
-            files[table].write(header+sep+line+"\n")
+        for row in parsed[table]:
+            line = ''
+            # Append each column's value in the specified order
+            for key in output_ordering[table]:
+                fld = row[key] if row[key] else u""
+                line = line + fld + sep
+            files[table].write(header+sep+line[:-1]+"\n")
         
 def main ():
 # process arguments
