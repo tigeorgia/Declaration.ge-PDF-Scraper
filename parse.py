@@ -329,9 +329,10 @@ def check_blank (pg_div, decl_id, decl_date, name, size):
 def page1_ft5s (pg_div, decl):
     ft5s = pg_div.findAll(name=u'span', attrs={u"class":u"ft05"})
     if len(ft5s) == 2:
-        # part 1 + <br> + part 2
-        decl[u"biography"][0][u"position"] = ft5s[0].contents[0] + ' ' + ft5s[0].contents[1].contents[0]
-        decl[u"biography"][0][u"work_contact"] = ft5s[1].contents[0] + ' ' + ft5s[1].contents[1].contents[0]
+        # part 1 + <br> + part 2 is the format, so we need 
+        # contents[0] and contents[2] to skip the <br>
+        decl[u"biography"][0][u"position"] = ft5s[0].contents[0] + ' ' + ft5s[0].contents[2]
+        decl[u"biography"][0][u"work_contact"] = ft5s[1].contents[0] + ' ' + ft5s[1].contents[2]
     else:
         raise MalformedDeclarationError("Wrong number of FT5s on page 1")
 
