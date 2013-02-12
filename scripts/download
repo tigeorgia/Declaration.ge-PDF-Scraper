@@ -28,7 +28,8 @@
 
 SRC="http://declaration.ge/csb/report/report.seam?id="
 ENG="&lang=2"
-STOP=1000
+START=40000
+STOP=5000
 CURL=/usr/bin/curl
 EN_FOLDER="en"
 KA_FOLDER="ka"
@@ -46,10 +47,15 @@ if [ -n "$1" ]; then
     echo "Entering $1"
     cd $1
     echo "Making language directories"
-    mkdir $EN_FOLDER && mkdir $KA_FOLDER
+    if [ ! -d "$EN_FOLDER" ]; then
+        mkdir $EN_FOLDER
+    fi
+    if [ ! -d "$KA_FOLDER" ]; then
+        mkdir $KA_FOLDER
+    fi
 fi
 
-c=0
+c=$START
 miss=0
 count=0
 files=0

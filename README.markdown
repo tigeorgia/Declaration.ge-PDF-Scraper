@@ -3,6 +3,13 @@ Declaration.ge Scraper Suite
 
 [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/ "Beautiful Soup") is required.
 
+NOTE: [declaration.ge](http://declaration.ge "Declaration.ge") recently
+added a bunch of archival documents in the form of scanned PDFs. This
+created a gap in the database IDs for the non-scanned PDFs that are
+downloaded by the download script. To get both sets, you will need to
+run the download script twice. The first time, the START variable should
+be set to 0, and the second time, it should be set to 40000.
+
 NOTE: [declaration.ge](http://declaration.ge "Declaration.ge") was
 recently updated to include English declarations. The download script
 will download Georgian and English declarations into separate folders

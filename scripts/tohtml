@@ -24,7 +24,7 @@
 #############################################################################
 
 BASEDIR=$PWD
-PDFTOHTML=/usr/bin/pdftohtml
+PDFTOHTML=poppler-0.16.7/utils/pdftohtml
 #PDFTOHTML=/wherever/poppler-0.16.7/utils/pdftohtml
 #############################################################################
 
