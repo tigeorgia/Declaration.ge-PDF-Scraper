@@ -42,7 +42,11 @@ KA_FOLDER="ka"
 #curl -c cookies.txt -b cookies.txt http://declaration.ge/csb/main.seam
 #curl -c cookies.txt -b cookies.txt http://declaration.ge/csb/public.seam
 #curl -c cookies.txt -b cookies.txt -d "" http://declaration.ge/csb/public.seam
-
+if [ $# -eq 0 ]
+    then
+        echo "usage: download <target-dir>"
+        exit 1
+fi
 if [ -n "$1" ]; then
     echo "Entering $1"
     cd $1
