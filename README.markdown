@@ -28,6 +28,11 @@ instructions and you will be able to find the compiled pdftohtml binary
 under poppler-0.16.7/utils. You'll need to change the PDFTOHTML path in
 the tohtml script accordingly.
 
+If you just want to scrape everything and output to CSV, simply build
+poppler and then run 
+
+scripts/full.sh
+
 Download the reports:
 
 $ ./scripts/download reports/
@@ -53,7 +58,7 @@ $ python ./file_output.py reports/ka
 
 CSV
 ---
-You can directly export to CSV using file_export.py (see above), and a few 
+You can directly export to CSV using file_output.py (see above), and a few 
 tools are provided to export the contents of a CouchDB database to CSV.
 
 Edit variables HOST and DB in couchctl to connect to your couchdb.
