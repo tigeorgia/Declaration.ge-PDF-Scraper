@@ -203,7 +203,7 @@ def main ():
         files = os.listdir(arg)
         os.chdir(arg)
         for filename,fieldname in zip(filenames,fieldnames):
-            out_files[fieldname] = codecs.open(filename+ext,'a',encoding='utf-8')
+            out_files[fieldname] = codecs.open(filename+ext,'a',encoding='utf-8-sig')
         for f in files:
             if not file_ok(f): continue
 
