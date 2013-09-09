@@ -26,8 +26,8 @@
 #
 #############################################################################
 
-SRC="http://declaration.ge/csb/report/report.seam?id="
-ENG="&lang=2"
+SRC_KA="https://declaration.gov.ge/declaration.php?id="
+SRC_EN="https://declaration.gov.ge/eng/declaration.php?id="
 CURL=/usr/bin/curl
 EN_FOLDER="en"
 KA_FOLDER="ka"
@@ -66,7 +66,7 @@ files=0
 while [ $miss -le $STOP ]
 do
     echo "Trying report ID $c"
-	$CURL --progress-bar --output $KA_FOLDER/report-$c.pdf "$SRC$c"
+	$CURL --progress-bar --output $KA_FOLDER/report-$c.pdf "$SRC_KA$c"
 	if [ ! -e $KA_FOLDER/report-$c.pdf ]
 	then
 		miss=`expr $miss + 1`
@@ -75,7 +75,7 @@ do
         	count=`expr $count + 1`
 		files=`expr $files + 1`
         	# Once we know the Georgian version exists, try to download Eng.
-        	$CURL --progress-bar --output $EN_FOLDER/report-$c.pdf "$SRC$c$ENG"
+        	$CURL --progress-bar --output $EN_FOLDER/report-$c.pdf "$SRC_EN$c"
 		if [ -e $EN_FOLDER/report-$c.pdf ]
 		then
 			files=`expr $files + 1`
